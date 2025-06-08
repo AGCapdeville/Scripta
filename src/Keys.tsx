@@ -1,16 +1,10 @@
 import styled from 'styled-components';
 
-const ButtonCustom = styled.button`
-  background-color: blue;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
+
+const LetterButton = styled.button`
+
 `;
 
-function keyboardKey(key : string) {
-  return <ButtonCustom>{key}</ButtonCustom>;
-}
 const Row = styled.div`
   display: flex;
   justify-content: center;
@@ -40,8 +34,8 @@ function renderKeyboard() {
       <Keyboard>
         {rows.map((row, rowIndex) => (
           <Row key={rowIndex}>
-            {row.map((letter, letterIndex) => (
-              <ButtonCustom key={letterIndex}>{letter}</ButtonCustom>
+            {row.map((letter) => (
+              <LetterButton key={letter}>{letter}</LetterButton>
             ))}
           </Row>
         ))}
