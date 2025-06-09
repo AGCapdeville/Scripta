@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-
 const LetterButton = styled.button`
   width: 10vw;
   height: 50px;
@@ -20,7 +19,7 @@ const LetterButton = styled.button`
   font-weight: bold;
   user-select: none;
 
-  @media (min-width: 500px) {
+  @media (min-width: 450px) {
   /* Styles for the smallest phones */
     width: 43px;
   }
@@ -44,7 +43,8 @@ const Keyboard = styled.div`
 let qwerty = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm'];
 
 
-function renderKeyboard() {
+function Keys() {
+
   const rowLengths = [10, 9, 8];
   let rows: string[][] = [];
   let index = 0;
@@ -53,7 +53,7 @@ function renderKeyboard() {
     rows.push(qwerty.slice(index, index + length));
     index += length;
   }
-
+  
   return (
     <>
       <Keyboard>
@@ -64,18 +64,10 @@ function renderKeyboard() {
             ))}
           </Row>
         ))}
-      </Keyboard>
+      </Keyboard>    
     </>
   )
-}
 
-function Keys() {
-  
-  return (
-    <>
-      {renderKeyboard()}
-    </>
-  )
 }
 
 
