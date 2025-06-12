@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 
 const Letter = styled.div`
-  width: 10vw;
-  height: 50px;
+  width: 15vw;
+  height: 40px;
 
   display: flex;
   justify-content: center;
@@ -11,10 +11,10 @@ const Letter = styled.div`
 
   font-size: 14px;
   margin: 0;
-  background-color: #a2a2a2;
+  background-color: #121212;
 
+  border: 1px solid #3a393c;
   border-radius: 11%;
-  border-color: #a2a2a2;
 
   text-transform: uppercase;
   font-weight: bold;
@@ -22,7 +22,7 @@ const Letter = styled.div`
 
   @media (min-width: 450px) {
   /* Styles for the smallest phones */
-    width: 43px;
+    width: 52px;
   }
 `;
 
@@ -30,7 +30,7 @@ const WordRow = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  gap: 2px;
+  gap: 5px;
   padding-top: 2px;
   padding-bottom: 2px;
 `;
@@ -42,23 +42,30 @@ const WordContainer = styled.div`
 `;
 
 type Props = {
-  word?: string;
+  word: string;
+  secretWord: string;
 };
 
-function Word({ word }: Props) {
+function Word({ word, secretWord}: Props) {
 
-  if (!word) return <p>Loading...</p>;
-
-
-  // useEffect(() => {
-  //   console.log(word);
-  // }, [word])
-
+  useEffect(() => {
+    console.log(word);
+  }, [word])
 
   return (
     <>
-      <h2>WORD:</h2>
-      <p>{word}</p>
+      <div>secret word: {secretWord}</div>
+      <WordContainer>
+        <WordRow>
+          
+          {[...word].map((letter, index) => (
+            <Letter key={index}>
+              {letter}
+            </Letter>
+          ))}
+
+        </WordRow>
+      </WordContainer>
     </>
   )
 }

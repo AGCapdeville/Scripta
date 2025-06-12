@@ -1,25 +1,23 @@
 .screen {
     width: 100vw;
     height: 100vh;
-    background-color: green;
-
-
+    /* background-color: green; */
 }
 
 .title {
     width: 100%;
     height: 10%;
-    background-color: gray;
+    background-color: #121212;
 }
 
 .wordBoard {
     width: 100%;
-    height: 60%;
-    background-color: darkgray;
+    height: 50%;
+    background-color: #121212;
 }
 
 .wordKeyboard {
     width: 100%;
-    height: 30%;
+    height: 40%;
     background-color: black;
 }

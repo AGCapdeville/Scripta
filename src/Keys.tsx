@@ -1,3 +1,5 @@
+import { HookCallbacks } from 'async_hooks';
+import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 const LetterButton = styled.button`
@@ -10,10 +12,10 @@ const LetterButton = styled.button`
 
   font-size: 14px;
   margin: 0;
-  background-color: #a2a2a2;
+  background-color: #818385;
 
   border-radius: 11%;
-  border-color: #a2a2a2;
+  border-color: #818385;
 
   text-transform: uppercase;
   font-weight: bold;
@@ -22,6 +24,33 @@ const LetterButton = styled.button`
   @media (min-width: 450px) {
   /* Styles for the smallest phones */
     width: 43px;
+  }
+`;
+
+const EnterButton = styled.button`
+  width: 13vw;
+  height: 50px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 9px;
+  margin: 0;
+  background-color: #818385;
+
+  border-radius: 11%;
+  border-color: #818385;
+
+  text-transform: uppercase;
+  font-weight: bold;
+  user-select: none;
+
+  @media (min-width: 450px) {
+  /* Styles for the smallest phones */
+    width: 60px;
+    font-size: 12px;
+
   }
 `;
 
@@ -40,12 +69,71 @@ const Keyboard = styled.div`
   align-items: center;
 `;
 
-let qwerty = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm'];
+let qwerty = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'enter', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'delete'];
 
 
-function Keys() {
+function type(letter: string, word: string, setWword: React.Dispatch<React.SetStateAction<string>>) {
+  let newWord = word.trim();
+  newWord = newWord + letter;
+  newWord.padEnd(5);
+  if (newWord.length < 6) {
+    setWword(newWord.padEnd(5));
+  }
 
-  const rowLengths = [10, 9, 8];
+}
+
+function enter() {
+  console.log("Enter!");
+}
+
+function backspace(word: string, setWword: React.Dispatch<React.SetStateAction<string>>) {
+  let newWord = word.trim().substring(0, (word.trim().length - 1));
+  setWword(newWord.padEnd(5));
+}
+
+type Props = {
+  word: string;
+  setWord: React.Dispatch<React.SetStateAction<string>>; // @Question : Is this the best way to do this...
+}
+
+function useKeyboardListener(word: string, setWord: React.Dispatch<React.SetStateAction<string>>) {
+  const wordRef = useRef(word);
+
+  // Keep the ref up to date with the latest word
+  useEffect(() => {
+    wordRef.current = word;
+  }, [word]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.defaultPrevented) return;
+
+      const key = event.key.toLowerCase(); // normalize
+      if (qwerty.includes(key)) {
+        type(key, wordRef.current, setWord);
+      }
+
+      if (key === "backspace") {
+        backspace(wordRef.current, setWord);
+      }
+
+      event.preventDefault();
+    }
+
+    window.addEventListener('keydown', handleKeyDown, true);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown, true);
+    };
+  }, []); // Empty deps array ensures listener is added once
+}
+
+
+
+function Keys({ word, setWord }: Props) {
+  useKeyboardListener(word, setWord);
+
+  const rowLengths = [10, 9, 10];
   let rows: string[][] = [];
   let index = 0;
 
@@ -59,9 +147,15 @@ function Keys() {
       <Keyboard>
         {rows.map((row, rowIndex) => (
           <Row key={rowIndex}>
-            {row.map((letter) => (
-              <LetterButton key={letter}>{letter}</LetterButton>
-            ))}
+            {row.map((letter) => {
+              if (letter == "enter") {
+                return (<EnterButton key={letter + "_bttn"} onClick={() => enter()}>{letter}</EnterButton>);
+              } else if (letter == "delete") {
+                return (<EnterButton key={letter + "_bttn"} onClick={() => backspace(word, setWord)}>{letter}</EnterButton>);
+              } else {
+                return (<LetterButton key={letter + "_key"} onClick={() => type(letter, word, setWord)}>{letter}</LetterButton>)
+              }
+            })}
           </Row>
         ))}
       </Keyboard>    

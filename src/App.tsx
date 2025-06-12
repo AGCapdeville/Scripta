@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import Word from './Word'
-import Keys from './Keys'
+import { useEffect, useState } from 'react';
+import './App.css';
+import Word from './Word';
+import Keys from './Keys';
 import styled from 'styled-components';
 
 const PageContainer = styled.button`
@@ -10,29 +10,31 @@ const PageContainer = styled.button`
 `;
 
 function App() {
-  const [word, setWord] = useState("");
+  const [word, setWord] = useState("     ");
+  const [secretWord, setSecretWord] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const fetchWord = async () => {
+  const fetchSecretWord = async () => {
     try {
       const response = await fetch('https://api.datamuse.com/words?sp=?????&max=1000');
       const data = await response.json();
       if (data.length > 0) {
         const randomWord = data[Math.floor(Math.random() * data.length)].word;
-        setWord(randomWord);
+        setSecretWord(randomWord);
       } else {
-        setWord('No words found.');
+        setSecretWord('No api words found.');
       }
     } catch (error) {
-      console.error('Error fetching word:', error);
-      setWord('Error fetching word.');
+      console.error('Error fetching api word:', error);
+      setSecretWord('Error fetching api word.');
     } finally {
       setLoading(false);
     }
   };
 
+  // Do once and forget...
   useEffect(() => {
-    fetchWord();
+    fetchSecretWord();
   }, []);
 
   return (
@@ -41,14 +43,19 @@ function App() {
       <div className='title'>
         <h3>Scripta</h3>
       </div>
-
-      <div className='wordBoard'>
-        {/* {loading ? "" : word} */}
-        {loading ? <h3>loading...</h3> : <Word word={word}/>}
-      </div>
+      
+      {loading ? "loading..." :
+      
+        <div className='wordBoard'>
+          {/* {loading ? "" : word} */}
+          {/* {loading ? <h3>loading...</h3> : <Word word={word}/>} */}
+          <Word word={word} secretWord={secretWord}/>
+        </div>
+      
+      }
 
       <div className='wordKeyboard'>
-        <Keys/>
+        <Keys word={word} setWord={setWord}/>
       </div>
 
     </div>
