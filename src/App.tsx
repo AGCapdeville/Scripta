@@ -11,6 +11,7 @@ const PageContainer = styled.button`
 
 function App() {
   const [word, setWord] = useState("     ");
+  const [save, saveWord] = useState(false);
   const [secretWord, setSecretWord] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -45,17 +46,13 @@ function App() {
       </div>
       
       {loading ? "loading..." :
-      
         <div className='wordBoard'>
-          {/* {loading ? "" : word} */}
-          {/* {loading ? <h3>loading...</h3> : <Word word={word}/>} */}
-          <Word word={word} secretWord={secretWord}/>
+          <Word word={word} setWord={setWord} secretWord={secretWord} save={save} saveWord={saveWord}/>
         </div>
-      
       }
 
       <div className='wordKeyboard'>
-        <Keys word={word} setWord={setWord}/>
+        <Keys word={word} setWord={setWord} saveWord={saveWord}/>
       </div>
 
     </div>

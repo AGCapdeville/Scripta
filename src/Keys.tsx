@@ -71,7 +71,6 @@ const Keyboard = styled.div`
 
 let qwerty = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'enter', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'delete'];
 
-
 function type(letter: string, word: string, setWword: React.Dispatch<React.SetStateAction<string>>) {
   let newWord = word.trim();
   newWord = newWord + letter;
@@ -79,11 +78,10 @@ function type(letter: string, word: string, setWword: React.Dispatch<React.SetSt
   if (newWord.length < 6) {
     setWword(newWord.padEnd(5));
   }
-
 }
 
-function enter() {
-  console.log("Enter!");
+function enter(saveWord: React.Dispatch<React.SetStateAction<boolean>>) {
+  saveWord(true);
 }
 
 function backspace(word: string, setWword: React.Dispatch<React.SetStateAction<string>>) {
@@ -91,12 +89,11 @@ function backspace(word: string, setWword: React.Dispatch<React.SetStateAction<s
   setWword(newWord.padEnd(5));
 }
 
-type Props = {
-  word: string;
-  setWord: React.Dispatch<React.SetStateAction<string>>; // @Question : Is this the best way to do this...
-}
+function useKeyboardListener(
+  word: string, 
+  setWord: React.Dispatch<React.SetStateAction<string>>,
+  saveWord: React.Dispatch<React.SetStateAction<boolean>> ) {
 
-function useKeyboardListener(word: string, setWord: React.Dispatch<React.SetStateAction<string>>) {
   const wordRef = useRef(word);
 
   // Keep the ref up to date with the latest word
@@ -109,12 +106,12 @@ function useKeyboardListener(word: string, setWord: React.Dispatch<React.SetStat
       if (event.defaultPrevented) return;
 
       const key = event.key.toLowerCase(); // normalize
-      if (qwerty.includes(key)) {
+      if (qwerty.includes(key) && key !== "enter" && key != "return") {
         type(key, wordRef.current, setWord);
-      }
-
-      if (key === "backspace") {
+      } else if (key === "backspace") {
         backspace(wordRef.current, setWord);
+      } else if (key === "enter") {
+        enter(saveWord);
       }
 
       event.preventDefault();
@@ -128,10 +125,14 @@ function useKeyboardListener(word: string, setWord: React.Dispatch<React.SetStat
   }, []); // Empty deps array ensures listener is added once
 }
 
+type Props = {
+  word: string;
+  setWord: React.Dispatch<React.SetStateAction<string>>; // @Question : Is this the best way to do this...
+  saveWord: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-
-function Keys({ word, setWord }: Props) {
-  useKeyboardListener(word, setWord);
+function Keys({ word, setWord, saveWord}: Props) {
+  useKeyboardListener(word, setWord, saveWord);
 
   const rowLengths = [10, 9, 10];
   let rows: string[][] = [];
@@ -149,7 +150,7 @@ function Keys({ word, setWord }: Props) {
           <Row key={rowIndex}>
             {row.map((letter) => {
               if (letter == "enter") {
-                return (<EnterButton key={letter + "_bttn"} onClick={() => enter()}>{letter}</EnterButton>);
+                return (<EnterButton key={letter + "_bttn"} onClick={() => enter(saveWord)}>{letter}</EnterButton>);
               } else if (letter == "delete") {
                 return (<EnterButton key={letter + "_bttn"} onClick={() => backspace(word, setWord)}>{letter}</EnterButton>);
               } else {
