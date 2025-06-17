@@ -10,6 +10,9 @@ const LetterButton = styled.button`
   justify-content: center;
   align-items: center;
 
+  color: white;
+  text-decoration: none;
+
   font-size: 14px;
   margin: 0;
   background-color: #818385;
@@ -34,6 +37,9 @@ const EnterButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  color: white;
+  text-decoration: none;
 
   font-size: 9px;
   margin: 0;
