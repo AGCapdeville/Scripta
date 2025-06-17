@@ -4,6 +4,10 @@ import Word from './Word';
 import Keys from './Keys';
 import styled from 'styled-components';
 
+import wordJSON from './wordList.json';
+
+const fiveLetterWords = wordJSON.filter((w: string) => w.length === 5);
+
 const PageContainer = styled.button`
   display: flex;
   flex-direction
@@ -17,17 +21,19 @@ function App() {
 
   const fetchSecretWord = async () => {
     try {
-      const response = await fetch('https://api.datamuse.com/words?sp=?????&max=1000');
-      const data = await response.json();
-      if (data.length > 0) {
-        const randomWord = data[Math.floor(Math.random() * data.length)].word;
-        setSecretWord(randomWord);
-      } else {
-        setSecretWord('No api words found.');
-      }
+      const randomWord = fiveLetterWords[Math.floor(Math.random() * fiveLetterWords.length)];
+      setSecretWord(randomWord);
+      // const response = await fetch('https://api.datamuse.com/words?sp=?????&max=1000');
+      // const data = await response.json();
+      // if (data.length > 0) {
+      //   const randomWord = data[Math.floor(Math.random() * data.length)].word;
+      //   setSecretWord(randomWord);
+      // } else {
+      //   setSecretWord('No api words found.');
+      // }
     } catch (error) {
-      console.error('Error fetching api word:', error);
-      setSecretWord('Error fetching api word.');
+      console.error('Error fetching word:', error);
+      setSecretWord('Error fetching word.');
     } finally {
       setLoading(false);
     }

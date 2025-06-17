@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+
 
 const Letter = styled.div`
   width: 15vw;
@@ -19,7 +20,6 @@ const Letter = styled.div`
   text-transform: uppercase;
   font-weight: bold;
   user-select: none;
-
   @media (min-width: 450px) {
   /* Styles for the smallest phones */
     width: 52px;
@@ -76,13 +76,19 @@ const GreenLetter = styled.div`
   }
 `;
 
-const WordRow = styled.div`
+const WordRow = styled.div<{ shouldShake: boolean }>`
   display: flex;
   justify-content: center;
   width: 100%;
   gap: 5px;
   padding-top: 2px;
   padding-bottom: 2px;
+
+  ${({ shouldShake }) =>
+    shouldShake &&
+    css`
+      animation: ${shake} 0.5s ease-in-out;
+    `}
 `;
 
 const WordContainer = styled.div`
@@ -91,17 +97,33 @@ const WordContainer = styled.div`
   align-items: center;
 `;
 
+const shake = keyframes`
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+`;
+
+
 function tryToSaveWord(word: string,
   setWord: React.Dispatch<React.SetStateAction<string>>, 
   save: boolean, 
   saveWord: React.Dispatch<React.SetStateAction<boolean>>,
   submittedWords: string[],
-  setSubmittedWords: React.Dispatch<React.SetStateAction<string[]>>)
+  setSubmittedWords: React.Dispatch<React.SetStateAction<string[]>>,
+  wordSet: Set<string>,
+  setShake: React.Dispatch<React.SetStateAction<boolean>>)
 {
   if (save) {
-    if (word.trim().length === 5) {
-      setSubmittedWords([...submittedWords, word.trim()]);    
-      setWord("     ");
+    if (wordSet.has(word.toLowerCase())) {
+      if (word.trim().length === 5) {
+        setSubmittedWords([...submittedWords, word.trim()]);    
+        setWord("     ");
+      }
+    } else {
+      setShake(true);
+      setTimeout(() => setShake(false), 500); // Reset shake after animation
     }
     saveWord(false);
   }
@@ -124,12 +146,42 @@ function letterState(letter: string, index: number, answer: string) {
   return (<Letter key={index}>{letter}</Letter>)
 }
 
+
 function Word({word, setWord, secretWord, save, saveWord}: Props) {
   const [submittedWords, setSubmittedWords] = useState<string[]>([]);
+  const [wordSet, setWordSet] = useState<Set<string>>(new Set());
+  const [shake, setShake] = useState(false);
 
   useEffect(() => {
-    tryToSaveWord(word, setWord, save, saveWord, submittedWords, setSubmittedWords);
+
+    tryToSaveWord(
+      word, 
+      setWord, 
+      save, 
+      saveWord, 
+      submittedWords, 
+      setSubmittedWords, 
+      wordSet,
+      setShake
+    );
+
   }, [save]);
+
+
+  useEffect(() => {
+    const loadWords = async () => {
+      const response = await fetch('./dictionary.txt'); // or '/wordList.json'
+      const text = await response.text();
+      const words = text
+        .split('\n')
+        .map(w => w.trim().toLowerCase())
+        .filter(w => w.length >= 3 && w.length <= 9); // optional filter
+
+      setWordSet(new Set(words));
+    };
+
+    loadWords();
+  }, []);
 
   return (
     <>
@@ -137,7 +189,7 @@ function Word({word, setWord, secretWord, save, saveWord}: Props) {
       <WordContainer>
 
         {submittedWords.map((submittedWord, rowIndex) => (
-          <WordRow key={rowIndex}>
+          <WordRow key={rowIndex} shouldShake={false}>
             {[...submittedWord].map((letter, index) => (
               letterState(letter, index, secretWord)
             ))}
@@ -145,7 +197,7 @@ function Word({word, setWord, secretWord, save, saveWord}: Props) {
         ))}
 
         {/* Current typing word */}
-        <WordRow id='currentWord'>
+        <WordRow id='currentWord' shouldShake={shake}>
           {[...word].map((letter, index) => (
             <Letter key={index}>{letter}</Letter>
           ))}
