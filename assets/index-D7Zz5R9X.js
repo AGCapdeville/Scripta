@@ -145,6 +145,9 @@ Error generating stack: `+a.message+`
   justify-content: center;
   align-items: center;
 
+  color: white;
+  text-decoration: none;
+
   font-size: 14px;
   margin: 0;
   background-color: #818385;
@@ -167,6 +170,9 @@ Error generating stack: `+a.message+`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  color: white;
+  text-decoration: none;
 
   font-size: 9px;
   margin: 0;
