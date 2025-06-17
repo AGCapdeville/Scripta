@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
+const Answer = styled.div<{ isHidden?: boolean }>`
+  display: ${({ isHidden }) => (isHidden ? 'none' : 'block')};
+`;
 
 const Letter = styled.div`
   width: 15vw;
@@ -149,11 +152,15 @@ function letterState(letter: string, index: number, answer: string) {
   return (<Letter key={index}>{letter}</Letter>)
 }
 
+function showAnswer(isHidden: boolean, setIsAnswerHidden: React.Dispatch<React.SetStateAction<boolean>>) {
+  setIsAnswerHidden(!isHidden);
+}
 
 function Word({word, setWord, secretWord, save, saveWord, attempts, setAttempts}: Props) {
   const [submittedWords, setSubmittedWords] = useState<string[]>([]);
   const [wordSet, setWordSet] = useState<Set<string>>(new Set());
   const [shake, setShake] = useState(false);
+  const [isAnswerHidden, setIsAnswerHidden] = useState(true);
 
   useEffect(() => {
 
@@ -190,7 +197,8 @@ function Word({word, setWord, secretWord, save, saveWord, attempts, setAttempts}
 
   return (
     <>
-      <div>secret word: {secretWord}</div>
+      <button onClick={() => showAnswer(isAnswerHidden, setIsAnswerHidden)}>show answer</button>
+      <Answer isHidden={isAnswerHidden}>secret word: {secretWord}</Answer>
       <WordContainer>
 
         {submittedWords.map((submittedWord, rowIndex) => (
