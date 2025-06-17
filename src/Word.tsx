@@ -113,14 +113,15 @@ function tryToSaveWord(word: string,
   submittedWords: string[],
   setSubmittedWords: React.Dispatch<React.SetStateAction<string[]>>,
   wordSet: Set<string>,
-  setShake: React.Dispatch<React.SetStateAction<boolean>>)
+  setShake: React.Dispatch<React.SetStateAction<boolean>>,
+  attempts: number,
+  setAttempt: React.Dispatch<React.SetStateAction<number>>)
 {
   if (save) {
-    if (wordSet.has(word.toLowerCase())) {
-      if (word.trim().length === 5) {
-        setSubmittedWords([...submittedWords, word.trim()]);    
-        setWord("     ");
-      }
+    if (wordSet.has(word.toLowerCase()) && word.trim().length === 5 && attempts < 5) {
+      setAttempt(attempts + 1);
+      setSubmittedWords([...submittedWords, word.trim()]);    
+      setWord("     ");
     } else {
       setShake(true);
       setTimeout(() => setShake(false), 500); // Reset shake after animation
@@ -135,6 +136,8 @@ type Props = {
   secretWord: string;
   save: boolean;
   saveWord: React.Dispatch<React.SetStateAction<boolean>>;
+  attempts: number;
+  setAttempts: React.Dispatch<React.SetStateAction<number>>;
 };
 
 function letterState(letter: string, index: number, answer: string) {
@@ -147,7 +150,7 @@ function letterState(letter: string, index: number, answer: string) {
 }
 
 
-function Word({word, setWord, secretWord, save, saveWord}: Props) {
+function Word({word, setWord, secretWord, save, saveWord, attempts, setAttempts}: Props) {
   const [submittedWords, setSubmittedWords] = useState<string[]>([]);
   const [wordSet, setWordSet] = useState<Set<string>>(new Set());
   const [shake, setShake] = useState(false);
@@ -162,7 +165,9 @@ function Word({word, setWord, secretWord, save, saveWord}: Props) {
       submittedWords, 
       setSubmittedWords, 
       wordSet,
-      setShake
+      setShake,
+      attempts,
+      setAttempts
     );
 
   }, [save]);

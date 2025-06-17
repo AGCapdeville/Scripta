@@ -8,16 +8,12 @@ import wordJSON from './wordList.json';
 
 const fiveLetterWords = wordJSON.filter((w: string) => w.length === 5);
 
-const PageContainer = styled.button`
-  display: flex;
-  flex-direction
-`;
-
 function App() {
   const [word, setWord] = useState("     ");
   const [save, saveWord] = useState(false);
   const [secretWord, setSecretWord] = useState("");
   const [loading, setLoading] = useState(false);
+  const [attempts, setAttempts] = useState(0);
 
   const fetchSecretWord = async () => {
     try {
@@ -39,6 +35,18 @@ function App() {
     }
   };
 
+  useEffect(() => {
+
+    if (word === secretWord) {
+      alert("you win!");
+    }
+
+    if (attempts > 4) {
+      alert("you loose!");
+    }
+
+  }, [save])
+
   // Do once and forget...
   useEffect(() => {
     fetchSecretWord();
@@ -53,7 +61,7 @@ function App() {
       
       {loading ? "loading..." :
         <div className='wordBoard'>
-          <Word word={word} setWord={setWord} secretWord={secretWord} save={save} saveWord={saveWord}/>
+          <Word word={word} setWord={setWord} secretWord={secretWord} save={save} saveWord={saveWord} attempts={attempts} setAttempts={setAttempts}/>
         </div>
       }
 
