@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
-const Answer = styled.div<{ isHidden?: boolean }>`
-  display: ${({ isHidden }) => (isHidden ? 'none' : 'block')};
+const Answer = styled.div<{ $isHidden?: boolean }>`
+  display: ${({ $isHidden }) => ($isHidden ? 'none' : 'block')};
 `;
 
 const Letter = styled.div`
@@ -79,7 +79,7 @@ const GreenLetter = styled.div`
   }
 `;
 
-const WordRow = styled.div<{ shouldShake: boolean }>`
+const WordRow = styled.div<{ $shouldShake: boolean }>`
   display: flex;
   justify-content: center;
   width: 100%;
@@ -87,8 +87,8 @@ const WordRow = styled.div<{ shouldShake: boolean }>`
   padding-top: 2px;
   padding-bottom: 2px;
 
-  ${({ shouldShake }) =>
-    shouldShake &&
+  ${({ $shouldShake }) =>
+    $shouldShake &&
     css`
       animation: ${shake} 0.5s ease-in-out;
     `}
@@ -141,6 +141,12 @@ type Props = {
   saveWord: React.Dispatch<React.SetStateAction<boolean>>;
   attempts: number;
   setAttempts: React.Dispatch<React.SetStateAction<number>>;
+  guessedLetters: Array<string>;
+  setGuessedLetters: React.Dispatch<React.SetStateAction<Array<string>>>;
+  almostLetters: Array<string>;
+  setAlmostLetters: React.Dispatch<React.SetStateAction<Array<string>>>;
+  correctLetters: Array<string>;
+  setCorrectLetters: React.Dispatch<React.SetStateAction<Array<string>>>;
 };
 
 function letterState(letter: string, index: number, answer: string) {
@@ -156,7 +162,15 @@ function showAnswer(isHidden: boolean, setIsAnswerHidden: React.Dispatch<React.S
   setIsAnswerHidden(!isHidden);
 }
 
-function Word({word, setWord, secretWord, save, saveWord, attempts, setAttempts}: Props) {
+function Word(
+  { word, setWord, secretWord, 
+    save, saveWord, 
+    attempts, setAttempts,
+    guessedLetters, setGuessedLetters, 
+    almostLetters, setAlmostLetters, 
+    correctLetters, setCorrectLetters}: Props
+  ) {
+
   const [submittedWords, setSubmittedWords] = useState<string[]>([]);
   const [wordSet, setWordSet] = useState<Set<string>>(new Set());
   const [shake, setShake] = useState(false);
@@ -164,18 +178,47 @@ function Word({word, setWord, secretWord, save, saveWord, attempts, setAttempts}
 
   useEffect(() => {
 
-    tryToSaveWord(
-      word, 
-      setWord, 
-      save, 
-      saveWord, 
-      submittedWords, 
-      setSubmittedWords, 
-      wordSet,
-      setShake,
-      attempts,
-      setAttempts
-    );
+    if (save) {
+      if (wordSet.has(word.toLowerCase()) && word.trim().length === 5 && attempts < 5) {
+
+        let guessed = [...guessedLetters];
+        let almost = [...almostLetters];
+        let correct = [...correctLetters];
+
+
+        [...word].forEach((char, index) => {
+          if (!guessed.includes(char)) {
+            guessed = [...guessed, char];
+          }
+          if (secretWord[index] == char) {
+            correct = [...correct, char];
+          }
+          if (secretWord.includes(char) && !almost.includes(char)) {
+            almost = [...almost, char];
+          }
+        })
+
+        if (guessed.length > guessedLetters.length) {
+          setGuessedLetters([...guessed]);
+        }
+
+        if (correct.length > correctLetters.length) {
+          setCorrectLetters([...correct]);
+        }
+
+        if (almost.length > almostLetters.length) {
+          setAlmostLetters([...almost]);
+        }
+
+        setAttempts(attempts + 1);
+        setSubmittedWords([...submittedWords, word.trim()]);    
+        setWord("     ");
+      } else {
+        setShake(true);
+        setTimeout(() => setShake(false), 500); // Reset shake after animation
+      }
+      saveWord(false);
+    }
 
   }, [save]);
 
@@ -198,11 +241,11 @@ function Word({word, setWord, secretWord, save, saveWord, attempts, setAttempts}
   return (
     <>
       <button onClick={() => showAnswer(isAnswerHidden, setIsAnswerHidden)}>show answer</button>
-      <Answer isHidden={isAnswerHidden}>secret word: {secretWord}</Answer>
+      <Answer $isHidden={isAnswerHidden}>secret word: {secretWord}</Answer>
       <WordContainer>
 
         {submittedWords.map((submittedWord, rowIndex) => (
-          <WordRow key={rowIndex} shouldShake={false}>
+          <WordRow key={rowIndex} $shouldShake={false}>
             {[...submittedWord].map((letter, index) => (
               letterState(letter, index, secretWord)
             ))}
@@ -210,7 +253,7 @@ function Word({word, setWord, secretWord, save, saveWord, attempts, setAttempts}
         ))}
 
         {/* Current typing word */}
-        <WordRow id='currentWord' shouldShake={shake}>
+        <WordRow id='currentWord' $shouldShake={shake}>
           {[...word].map((letter, index) => (
             <Letter key={index}>{letter}</Letter>
           ))}

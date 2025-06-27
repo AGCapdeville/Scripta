@@ -1,8 +1,8 @@
 import { HookCallbacks } from 'async_hooks';
 import { useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-const LetterButton = styled.button`
+const LetterButton = styled.div<{ $status: number }>`
   width: 10vw;
   height: 50px;
 
@@ -15,7 +15,33 @@ const LetterButton = styled.button`
 
   font-size: 14px;
   margin: 0;
-  background-color: #818385;
+
+  ${({ $status }) => {
+    switch ($status) {
+      case 0:
+        return css`
+          background-color: #818385;
+          border-color: #818385;
+        `;
+      case 1:
+        return css`
+          background-color: #3a393c;
+          border-color: #3a393c;
+        `;      
+      case 2:
+        return css`
+          background-color: #b99d42;
+          border-color: #b99d42;
+        `;  
+      case 3:
+        return css`
+          background-color: #508c50;
+          border-color: #508c50;
+        `; 
+      default:
+        return null;
+    }
+  }}
 
   border-radius: 11%;
   border-color: #818385;
@@ -135,9 +161,12 @@ type Props = {
   word: string;
   setWord: React.Dispatch<React.SetStateAction<string>>; // @Question : Is this the best way to do this...
   saveWord: React.Dispatch<React.SetStateAction<boolean>>;
+  guessedLetters: Array<string>;
+  almostLetters: Array<string>;
+  correctLetters: Array<string>;
 }
 
-function Keys({ word, setWord, saveWord}: Props) {
+function Keys({ word, setWord, saveWord, guessedLetters, almostLetters, correctLetters}: Props) {
   useKeyboardListener(word, setWord, saveWord);
 
   const rowLengths = [10, 9, 10];
@@ -148,6 +177,8 @@ function Keys({ word, setWord, saveWord}: Props) {
     rows.push(qwerty.slice(index, index + length));
     index += length;
   }
+
+
   
   return (
     <>
@@ -160,7 +191,21 @@ function Keys({ word, setWord, saveWord}: Props) {
               } else if (letter == "delete") {
                 return (<EnterButton key={letter + "_bttn"} onClick={() => backspace(word, setWord)}>{letter}</EnterButton>);
               } else {
-                return (<LetterButton key={letter + "_key"} onClick={() => type(letter, word, setWord)}>{letter}</LetterButton>)
+
+                if (correctLetters.includes(letter)) {
+                  return (<LetterButton $status={3} key={letter + "_key"} onClick={() => type(letter, word, setWord)}>{letter}</LetterButton>)
+                }
+
+                if (almostLetters.includes(letter)) {
+                  return (<LetterButton $status={2} key={letter + "_key"} onClick={() => type(letter, word, setWord)}>{letter}</LetterButton>)
+                }
+
+                if (guessedLetters.includes(letter)) {
+                  return (<LetterButton $status={1} key={letter + "_key"} onClick={() => type(letter, word, setWord)}>{letter}</LetterButton>)
+                }
+
+                return (<LetterButton $status={0} key={letter + "_key"} onClick={() => type(letter, word, setWord)}>{letter}</LetterButton>)
+              
               }
             })}
           </Row>

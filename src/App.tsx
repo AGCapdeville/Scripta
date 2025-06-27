@@ -15,10 +15,16 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [attempts, setAttempts] = useState(0);
 
+  // Why do the other states not freak out here? ^^^
+  const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
+  const [almostLetters, setAlmostLetters] = useState<string[]>([]);
+  const [correctLetters, setCorrectLetters] = useState<string[]>([]);
+
   const fetchSecretWord = async () => {
     try {
       const randomWord = fiveLetterWords[Math.floor(Math.random() * fiveLetterWords.length)];
       setSecretWord(randomWord);
+// API WORDS -----------------------------------------------------------------------------
       // const response = await fetch('https://api.datamuse.com/words?sp=?????&max=1000');
       // const data = await response.json();
       // if (data.length > 0) {
@@ -27,6 +33,7 @@ function App() {
       // } else {
       //   setSecretWord('No api words found.');
       // }
+//
     } catch (error) {
       console.error('Error fetching word:', error);
       setSecretWord('Error fetching word.');
@@ -61,12 +68,32 @@ function App() {
       
       {loading ? "loading..." :
         <div className='wordBoard'>
-          <Word word={word} setWord={setWord} secretWord={secretWord} save={save} saveWord={saveWord} attempts={attempts} setAttempts={setAttempts}/>
+          <Word word={word} 
+            setWord={setWord} 
+            secretWord={secretWord} 
+            save={save} 
+            saveWord={saveWord} 
+            attempts={attempts} 
+            setAttempts={setAttempts}
+            guessedLetters={guessedLetters}
+            setGuessedLetters={setGuessedLetters}
+            almostLetters={almostLetters}
+            setAlmostLetters={setAlmostLetters}
+            correctLetters={correctLetters}
+            setCorrectLetters={setCorrectLetters}
+            />
         </div>
       }
 
       <div className='wordKeyboard'>
-        <Keys word={word} setWord={setWord} saveWord={saveWord}/>
+        <Keys 
+          word={word} 
+          setWord={setWord} 
+          saveWord={saveWord}
+          guessedLetters={guessedLetters}
+          almostLetters={almostLetters}
+          correctLetters={correctLetters}
+        />
       </div>
 
     </div>
