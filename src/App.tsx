@@ -24,16 +24,6 @@ function App() {
     try {
       const randomWord = fiveLetterWords[Math.floor(Math.random() * fiveLetterWords.length)];
       setSecretWord(randomWord);
-// API WORDS -----------------------------------------------------------------------------
-      // const response = await fetch('https://api.datamuse.com/words?sp=?????&max=1000');
-      // const data = await response.json();
-      // if (data.length > 0) {
-      //   const randomWord = data[Math.floor(Math.random() * data.length)].word;
-      //   setSecretWord(randomWord);
-      // } else {
-      //   setSecretWord('No api words found.');
-      // }
-//
     } catch (error) {
       console.error('Error fetching word:', error);
       setSecretWord('Error fetching word.');

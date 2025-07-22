@@ -5,6 +5,12 @@ const Answer = styled.div<{ $isHidden?: boolean }>`
   display: ${({ $isHidden }) => ($isHidden ? 'none' : 'block')};
 `;
 
+const WordBox = styled.div`
+  display: flex;
+  flex-flow: column;
+  position: absolute;
+`
+
 const Letter = styled.div`
   width: 15vw;
   height: 40px;
@@ -244,20 +250,33 @@ function Word(
       <Answer $isHidden={isAnswerHidden}>secret word: {secretWord}</Answer>
       <WordContainer>
 
-        {submittedWords.map((submittedWord, rowIndex) => (
+        {[0,1,2,3,4].map((rowIndex) => (
           <WordRow key={rowIndex} $shouldShake={false}>
-            {[...submittedWord].map((letter, index) => (
-              letterState(letter, index, secretWord)
+            {[0,1,2,3,4].map((index) => (
+              letterState(' ', index, secretWord)
             ))}
           </WordRow>
         ))}
 
-        {/* Current typing word */}
-        <WordRow id='currentWord' $shouldShake={shake}>
-          {[...word].map((letter, index) => (
-            <Letter key={index}>{letter}</Letter>
+        <WordBox>
+          
+          {submittedWords.map((submittedWord, rowIndex) => (
+            <WordRow key={rowIndex} $shouldShake={false}>
+              {[...submittedWord].map((letter, index) => (
+                letterState(letter, index, secretWord)
+              ))}
+            </WordRow>
           ))}
-        </WordRow>
+
+          {/* Current typing word */}
+          <WordRow id='currentWord' $shouldShake={shake}>
+            {[...word].map((letter, index) => (
+              <Letter key={index}>{letter}</Letter>
+            ))}
+          </WordRow>
+
+        </WordBox>
+
 
       </WordContainer>
     </>
