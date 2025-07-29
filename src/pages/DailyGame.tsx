@@ -1,0 +1,141 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import seedrandom from 'seedrandom';
+
+import Word from './Word';
+import Keys from './Keys';
+
+import wordJSON from "../assets/wordList.json";
+
+
+function getDailySeed(key = 'daily-seed'): string {
+  const today = new Date().toISOString().split('T')[0]; // "2025-07-23"
+  const seedKey = `${key}:${today}`;
+
+  let seed = localStorage.getItem(seedKey);
+
+  if (!seed) {
+    // First time today — generate a new random seed
+    seed = Math.random().toString(36).substring(2); // random string
+    localStorage.setItem(seedKey, seed);
+  }
+
+  return seed; 
+}
+
+function getDailyWord(wordSeed: string, wordList: string[], key : string = 'daily-word'): string {
+  const today = new Date().toISOString().split('T')[0]; // "2025-07-23"
+  const seedKey = `${key}:${today}`;
+
+  let word = localStorage.getItem(seedKey);
+
+  if (!word) {
+    const rng = seedrandom(wordSeed);
+    word = wordList[Math.floor(rng() * wordList.length) + 1]
+
+    localStorage.setItem(seedKey, word);
+  }
+
+  return word; 
+}
+
+function DailyGame() {
+
+  const navigate = useNavigate();
+
+  const [word, setWord] = useState("     ");
+  const [save, saveWord] = useState(false);
+  const [secretWord, setSecretWord] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [attempts, setAttempts] = useState(0);
+
+  // Why do the other states not freak out here? ^^^
+  const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
+  const [almostLetters, setAlmostLetters] = useState<string[]>([]);
+  const [correctLetters, setCorrectLetters] = useState<string[]>([]);
+
+  const fetchSecretWord = async () => {
+
+    const fiveLetterWords = wordJSON.filter((w: string) => w.length === 5);
+
+    const seed = getDailySeed();
+    const word = getDailyWord(seed, fiveLetterWords);
+    
+    try {
+      setSecretWord(word);
+    } catch (error) {
+      console.error('Error fetching word:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+
+    if (word === secretWord) {
+      navigate('/results', {
+        state: {
+          word: word,
+          outcome: true,
+        }
+      });
+    }
+
+    if (attempts > 4) {
+      navigate('/results', {
+        state: {
+          word: secretWord,
+          outcome: false,
+        }
+      });
+    }
+
+  }, [save])
+
+  // Do once and forget...
+  useEffect(() => {
+    fetchSecretWord();
+  }, []);
+
+  return (
+    <div className='screen'>
+      
+      <div className='title'>
+        <h3>Scripta</h3>
+      </div>
+      
+      {loading ? "loading..." :
+        <div className='wordBoard'>
+          <Word word={word} 
+            setWord={setWord} 
+            secretWord={secretWord} 
+            save={save} 
+            saveWord={saveWord} 
+            attempts={attempts} 
+            setAttempts={setAttempts}
+            guessedLetters={guessedLetters}
+            setGuessedLetters={setGuessedLetters}
+            almostLetters={almostLetters}
+            setAlmostLetters={setAlmostLetters}
+            correctLetters={correctLetters}
+            setCorrectLetters={setCorrectLetters}
+            />
+        </div>
+      }
+
+      <div className='wordKeyboard'>
+        <Keys 
+          word={word} 
+          setWord={setWord} 
+          saveWord={saveWord}
+          guessedLetters={guessedLetters}
+          almostLetters={almostLetters}
+          correctLetters={correctLetters}
+        />
+      </div>
+
+    </div>
+  )
+}
+
+export default DailyGame
