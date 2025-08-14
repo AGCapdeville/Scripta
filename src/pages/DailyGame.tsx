@@ -7,33 +7,24 @@ import Keys from './Keys';
 
 import wordJSON from "../assets/wordList.json";
 
-
-function getDailySeed(key = 'daily-seed'): string {
-  const today = new Date().toISOString().split('T')[0]; // "2025-07-23"
-  const seedKey = `${key}:${today}`;
-
-  let seed = localStorage.getItem(seedKey);
-
-  if (!seed) {
-    // First time today — generate a new random seed
-    seed = Math.random().toString(36).substring(2); // random string
-    localStorage.setItem(seedKey, seed);
-  }
-
-  return seed; 
+function getDailySeed(ns = 'my-game'): string {
+  const todayUTC = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+  return `${ns}:${todayUTC}`;
 }
 
-function getDailyWord(wordSeed: string, wordList: string[], key : string = 'daily-word'): string {
-  const today = new Date().toISOString().split('T')[0]; // "2025-07-23"
-  const seedKey = `${key}:${today}`;
+function getDailyRNG(ns?: string) {
+  return seedrandom(getDailySeed(ns));
+}
 
-  let word = localStorage.getItem(seedKey);
+function getDailyWord(wordList: string[]): string {
+
+  let key = getDailySeed();
+  let word = localStorage.getItem(key);
 
   if (!word) {
-    const rng = seedrandom(wordSeed);
+    const rng = getDailyRNG();
     word = wordList[Math.floor(rng() * wordList.length) + 1]
-
-    localStorage.setItem(seedKey, word);
+    localStorage.setItem(getDailySeed(), word);
   }
 
   return word; 
@@ -57,9 +48,7 @@ function DailyGame() {
   const fetchSecretWord = async () => {
 
     const fiveLetterWords = wordJSON.filter((w: string) => w.length === 5);
-
-    const seed = getDailySeed();
-    const word = getDailyWord(seed, fiveLetterWords);
+    const word = getDailyWord(fiveLetterWords);
     
     try {
       setSecretWord(word);
@@ -73,19 +62,21 @@ function DailyGame() {
   useEffect(() => {
 
     if (word === secretWord) {
-      navigate('/results', {
+      navigate('/scripta/results', {
         state: {
           word: word,
           outcome: true,
+          guesses: attempts
         }
       });
     }
 
-    if (attempts > 4) {
-      navigate('/results', {
+    if (attempts > 5) {
+      navigate('/scripta/results', {
         state: {
           word: secretWord,
           outcome: false,
+          guesses: attempts
         }
       });
     }
@@ -110,9 +101,9 @@ function DailyGame() {
             setWord={setWord} 
             secretWord={secretWord} 
             save={save} 
-            saveWord={saveWord} 
-            attempts={attempts} 
-            setAttempts={setAttempts}
+            saveWord={saveWord}
+            attempts={attempts}
+            setAttempts={setAttempts} 
             guessedLetters={guessedLetters}
             setGuessedLetters={setGuessedLetters}
             almostLetters={almostLetters}

@@ -9,8 +9,8 @@ let root = document.getElementById('root');
 if (root)
   createRoot(root).render(
     <BrowserRouter>
-      <StrictMode>
-        <App />
-      </StrictMode>
+      {/* <StrictMode> */}
+      <App />
+      {/* </StrictMode> */}
     </BrowserRouter>
   )

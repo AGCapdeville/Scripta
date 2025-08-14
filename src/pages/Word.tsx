@@ -115,29 +115,6 @@ const shake = keyframes`
   100% { transform: translateX(0); }
 `;
 
-function tryToSaveWord(word: string,
-  setWord: React.Dispatch<React.SetStateAction<string>>, 
-  save: boolean, 
-  saveWord: React.Dispatch<React.SetStateAction<boolean>>,
-  submittedWords: string[],
-  setSubmittedWords: React.Dispatch<React.SetStateAction<string[]>>,
-  wordSet: Set<string>,
-  setShake: React.Dispatch<React.SetStateAction<boolean>>,
-  attempts: number,
-  setAttempt: React.Dispatch<React.SetStateAction<number>>)
-{
-  if (save) {
-    if (wordSet.has(word.toLowerCase()) && word.trim().length === 5 && attempts < 5) {
-      setAttempt(attempts + 1);
-      setSubmittedWords([...submittedWords, word.trim()]);    
-      setWord("     ");
-    } else {
-      setShake(true);
-      setTimeout(() => setShake(false), 500); // Reset shake after animation
-    }
-    saveWord(false);
-  }
-}
 
 type Props = {
   word: string;
@@ -183,6 +160,8 @@ function Word(
   const [isAnswerHidden, setIsAnswerHidden] = useState(true);
 
   useEffect(() => {
+
+    console.log("SAVING WORD");
 
     if (save) {
       if (wordSet.has(word.toLowerCase()) && word.trim().length === 5 && attempts < 5) {
@@ -238,7 +217,7 @@ function Word(
       <Answer $isHidden={isAnswerHidden}>secret word: {secretWord}</Answer>
       <WordContainer>
 
-        {[0,1,2,3,4].map((rowIndex) => (
+        {[0,1,2,3,4,5].map((rowIndex) => (
           <WordRow key={rowIndex} $shouldShake={false}>
             {[0,1,2,3,4].map((index) => (
               letterState(' ', index, secretWord)
