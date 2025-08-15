@@ -54,7 +54,6 @@ export default function Results() {
     <div>
       <h1>Results: {outcome ? 'Victory!' : 'Lost!'}</h1>
       <p>Word: {word}</p>
-      <p>Guesses: {guesses}</p>
     </div>
   );
 }
