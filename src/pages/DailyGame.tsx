@@ -2,21 +2,21 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import seedrandom from 'seedrandom';
 
-import Word from './Word';
-import Keys from './Keys';
+import { Word } from '../components/Word';
+import { Keys } from '../components/Keys';
 
 import wordJSON from "../assets/wordList.json";
 
-function getDailySeed(ns = 'my-game'): string {
+const getDailySeed = (ns = 'my-game'): string => {
   const todayUTC = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
   return `${ns}:${todayUTC}`;
 }
 
-function getDailyRNG(ns?: string) {
+const getDailyRNG = (ns?: string) => {
   return seedrandom(getDailySeed(ns));
 }
 
-function getDailyWord(wordList: string[]): string {
+const getDailyWord = (wordList: string[]): string => {
 
   let key = getDailySeed();
   let word = localStorage.getItem(key);
@@ -30,7 +30,7 @@ function getDailyWord(wordList: string[]): string {
   return word; 
 }
 
-function DailyGame() {
+export const DailyGame = () => {
 
   const navigate = useNavigate();
 
@@ -60,25 +60,24 @@ function DailyGame() {
   };
 
   useEffect(() => {
+    
+    if (word === secretWord || attempts > 5) {
+      
+      console.log("word:" + word + " secWord:" + secretWord + " a:" + attempts);
+      console.log("outcome: " + (word === secretWord));
 
-    if (word === secretWord) {
-      navigate('/scripta/results', {
-        state: {
-          word: word,
-          outcome: true,
-          guesses: attempts
-        }
-      });
-    }
-
-    if (attempts > 5) {
-      navigate('/scripta/results', {
-        state: {
-          word: secretWord,
-          outcome: false,
-          guesses: attempts
-        }
-      });
+      // navigate('/scripta/results', {
+      //   state: {
+      //     gameType: "Daily Game",
+      //     outcome: word === secretWord,
+      //     guesses: attempts
+      //   }
+      // });
+      // Results({
+      //   gameType: "Daily Game",
+      //   outcome: word === secretWord,
+      //   guesses: attempts
+      // });
     }
 
   }, [save])
@@ -128,5 +127,3 @@ function DailyGame() {
     </div>
   )
 }
-
-export default DailyGame

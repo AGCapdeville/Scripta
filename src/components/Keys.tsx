@@ -102,7 +102,7 @@ const Keyboard = styled.div`
 
 let qwerty = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'enter', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'delete'];
 
-function type(letter: string, word: string, setWword: React.Dispatch<React.SetStateAction<string>>) {
+export const Type = (letter: string, word: string, setWword: React.Dispatch<React.SetStateAction<string>>) => {
   let newWord = word.trim();
   newWord = newWord + letter;
   newWord.padEnd(5);
@@ -111,19 +111,20 @@ function type(letter: string, word: string, setWword: React.Dispatch<React.SetSt
   }
 }
 
-function enter(saveWord: React.Dispatch<React.SetStateAction<boolean>>) {
+export const Enter = (saveWord: React.Dispatch<React.SetStateAction<boolean>>) => {
   saveWord(true);
 }
 
-function backspace(word: string, setWword: React.Dispatch<React.SetStateAction<string>>) {
+export const Backspace = (word: string, setWword: React.Dispatch<React.SetStateAction<string>>) => {
   let newWord = word.trim().substring(0, (word.trim().length - 1));
   setWword(newWord.padEnd(5));
 }
 
-function useKeyboardListener(
+export const useKeyboardListener = (
   word: string, 
   setWord: React.Dispatch<React.SetStateAction<string>>,
-  saveWord: React.Dispatch<React.SetStateAction<boolean>> ) {
+  saveWord: React.Dispatch<React.SetStateAction<boolean>> 
+) => {
 
   const wordRef = useRef(word);
 
@@ -138,11 +139,11 @@ function useKeyboardListener(
 
       const key = event.key.toLowerCase(); // normalize
       if (qwerty.includes(key) && key !== "enter" && key != "return") {
-        type(key, wordRef.current, setWord);
+        Type(key, wordRef.current, setWord);
       } else if (key === "backspace") {
-        backspace(wordRef.current, setWord);
+        Backspace(wordRef.current, setWord);
       } else if (key === "enter") {
-        enter(saveWord);
+        Enter(saveWord);
       }
 
       event.preventDefault();
@@ -165,7 +166,7 @@ type Props = {
   correctLetters: Array<string>;
 }
 
-function Keys({ word, setWord, saveWord, guessedLetters, almostLetters, correctLetters}: Props) {
+export const Keys = ({ word, setWord, saveWord, guessedLetters, almostLetters, correctLetters}: Props) => {
   useKeyboardListener(word, setWord, saveWord);
 
   const rowLengths = [10, 9, 10];
@@ -214,6 +215,3 @@ function Keys({ word, setWord, saveWord, guessedLetters, almostLetters, correctL
   )
 
 }
-
-
-export default Keys

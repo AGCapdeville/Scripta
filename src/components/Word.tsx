@@ -14,7 +14,7 @@ const WordBox = styled.div`
 
 const Letter = styled.div`
   width: 15vw;
-  height: 40px;
+  height: 15vw;
 
   display: flex;
   justify-content: center;
@@ -38,7 +38,7 @@ const Letter = styled.div`
 
 const GoldLetter = styled.div`
   width: 15vw;
-  height: 40px;
+  height: 15vw;
 
   display: flex;
   justify-content: center;
@@ -63,7 +63,7 @@ const GoldLetter = styled.div`
 
 const GreenLetter = styled.div`
   width: 15vw;
-  height: 40px;
+  height: 15vw;
 
   display: flex;
   justify-content: center;
@@ -115,8 +115,20 @@ const shake = keyframes`
   100% { transform: translateX(0); }
 `;
 
+export const letterState = (letter: string, index: number, answer: string) => {
+  if (answer[index] == letter) {
+    return (<GreenLetter key={index}>{letter}</GreenLetter>)
+  } else if (answer.includes(letter)) {
+    return (<GoldLetter key={index}>{letter}</GoldLetter>)
+  }
+  return (<Letter key={index}>{letter}</Letter>)
+}
 
-type Props = {
+export const showAnswer = (isHidden: boolean, setIsAnswerHidden: React.Dispatch<React.SetStateAction<boolean>>) => {
+  setIsAnswerHidden(!isHidden);
+}
+
+type WordProps = {
   word: string;
   setWord: React.Dispatch<React.SetStateAction<string>>
   secretWord: string;
@@ -132,27 +144,14 @@ type Props = {
   setCorrectLetters: React.Dispatch<React.SetStateAction<Array<string>>>;
 };
 
-function letterState(letter: string, index: number, answer: string) {
-  if (answer[index] == letter) {
-    return (<GreenLetter key={index}>{letter}</GreenLetter>)
-  } else if (answer.includes(letter)) {
-    return (<GoldLetter key={index}>{letter}</GoldLetter>)
-  }
-  return (<Letter key={index}>{letter}</Letter>)
-}
-
-function showAnswer(isHidden: boolean, setIsAnswerHidden: React.Dispatch<React.SetStateAction<boolean>>) {
-  setIsAnswerHidden(!isHidden);
-}
-
-function Word(
+export const Word = (
   { word, setWord, secretWord, 
     save, saveWord, 
     attempts, setAttempts,
     guessedLetters, setGuessedLetters, 
     almostLetters, setAlmostLetters, 
-    correctLetters, setCorrectLetters}: Props
-  ) {
+    correctLetters, setCorrectLetters }: WordProps
+  ) => {
 
   const [submittedWords, setSubmittedWords] = useState<string[]>([]);
   const [wordSet, setWordSet] = useState<Set<string>>(new Set());
@@ -213,7 +212,7 @@ function Word(
 
   return (
     <>
-      <button onClick={() => showAnswer(isAnswerHidden, setIsAnswerHidden)}>show answer</button>
+      {/* <button onClick={() => showAnswer(isAnswerHidden, setIsAnswerHidden)}>show answer</button> */}
       <Answer $isHidden={isAnswerHidden}>secret word: {secretWord}</Answer>
       <WordContainer>
 
@@ -249,5 +248,3 @@ function Word(
     </>
   )
 }
-
-export default Word

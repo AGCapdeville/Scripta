@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-function Navbar() {
+export const Navbar = () => {
   return (
     <nav>
       <Link to="/scripta">Home</Link>
@@ -8,5 +8,3 @@ function Navbar() {
     </nav>
   );
 }
-
-export default Navbar;

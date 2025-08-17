@@ -1,0 +1,12 @@
+Move files to a seperation of responsabities:
+Move statistics, bar etc to their own components.
+Move playerData funtionality to a utility folder
+
+Anything that returns JSX should be its own React component
+
+Move from function() to const "function" = () => {}
+Because it is safer/ easier to read
+
+Try to avoid default exports, use name exports to force devs(human) to fetch exactly what they want from a file instead of relying on defaults, which could be confusing if not named well.
+
+Lets set up Netlify
