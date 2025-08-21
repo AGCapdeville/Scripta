@@ -145,8 +145,8 @@ type WordProps = {
 };
 
 export const Word = (
-  { word, setWord, secretWord, 
-    save, saveWord, 
+  { word, setWord, secretWord,
+    save, saveWord,
     attempts, setAttempts,
     guessedLetters, setGuessedLetters, 
     almostLetters, setAlmostLetters, 

@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import seedrandom from 'seedrandom';
 
 import { Word } from '../components/Word';
 import { Keys } from '../components/Keys';
 
 import wordJSON from "../assets/wordList.json";
+import { Results } from '../components/Results';
+
+import { useNavigate } from "react-router-dom";
 
 const getDailySeed = (ns = 'my-game'): string => {
   const todayUTC = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
@@ -28,22 +30,27 @@ const getDailyWord = (wordList: string[]): string => {
   }
 
   return word; 
-}
+};
 
 export const DailyGame = () => {
-
-  const navigate = useNavigate();
 
   const [word, setWord] = useState("     ");
   const [save, saveWord] = useState(false);
   const [secretWord, setSecretWord] = useState("");
   const [loading, setLoading] = useState(false);
   const [attempts, setAttempts] = useState(0);
+  const [showResults, setShowResults] = useState(false);
+  const [outcome, setOutcome] = useState(false);
 
-  // Why do the other states not freak out here? ^^^
   const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
   const [almostLetters, setAlmostLetters] = useState<string[]>([]);
   const [correctLetters, setCorrectLetters] = useState<string[]>([]);
+  const navigate = useNavigate();
+
+  const closeHandler = () => {
+    setShowResults(false);
+    navigate('/scripta/');
+  };
 
   const fetchSecretWord = async () => {
 
@@ -60,24 +67,14 @@ export const DailyGame = () => {
   };
 
   useEffect(() => {
-    
-    if (word === secretWord || attempts > 5) {
-      
-      console.log("word:" + word + " secWord:" + secretWord + " a:" + attempts);
-      console.log("outcome: " + (word === secretWord));
+    if (!save) return;
 
-      // navigate('/scripta/results', {
-      //   state: {
-      //     gameType: "Daily Game",
-      //     outcome: word === secretWord,
-      //     guesses: attempts
-      //   }
-      // });
-      // Results({
-      //   gameType: "Daily Game",
-      //   outcome: word === secretWord,
-      //   guesses: attempts
-      // });
+    const won = word === secretWord;
+    const ended = won || attempts >= 5;
+    
+    if (ended) {
+      setOutcome(won);
+      setShowResults(true);
     }
 
   }, [save])
@@ -87,12 +84,16 @@ export const DailyGame = () => {
     fetchSecretWord();
   }, []);
 
+
+
   return (
     <div className='screen'>
       
       <div className='title'>
         <h3>Scripta</h3>
       </div>
+
+      <div id="Results"></div>
       
       {loading ? "loading..." :
         <div className='wordBoard'>
@@ -109,7 +110,7 @@ export const DailyGame = () => {
             setAlmostLetters={setAlmostLetters}
             correctLetters={correctLetters}
             setCorrectLetters={setCorrectLetters}
-            />
+          />
         </div>
       }
 
@@ -123,6 +124,15 @@ export const DailyGame = () => {
           correctLetters={correctLetters}
         />
       </div>
+
+      {showResults && (
+        <Results
+          game="Daily Game"
+          outcome={outcome}
+          guesses={attempts}
+          onClose={closeHandler}
+        />
+      )}
 
     </div>
   )

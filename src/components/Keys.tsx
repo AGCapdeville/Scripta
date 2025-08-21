@@ -177,8 +177,6 @@ export const Keys = ({ word, setWord, saveWord, guessedLetters, almostLetters, c
     rows.push(qwerty.slice(index, index + length));
     index += length;
   }
-
-
   
   return (
     <>
@@ -187,24 +185,24 @@ export const Keys = ({ word, setWord, saveWord, guessedLetters, almostLetters, c
           <Row key={rowIndex}>
             {row.map((letter) => {
               if (letter == "enter") {
-                return (<EnterButton key={letter + "_bttn"} onClick={() => enter(saveWord)}>{letter}</EnterButton>);
+                return (<EnterButton key={letter + "_bttn"} onClick={() => Enter(saveWord)}>{letter}</EnterButton>);
               } else if (letter == "delete") {
-                return (<EnterButton key={letter + "_bttn"} onClick={() => backspace(word, setWord)}>{letter}</EnterButton>);
+                return (<EnterButton key={letter + "_bttn"} onClick={() => Backspace(word, setWord)}>{letter}</EnterButton>);
               } else {
 
                 if (correctLetters.includes(letter)) {
-                  return (<LetterButton $status={3} key={letter + "_key"} onClick={() => type(letter, word, setWord)}>{letter}</LetterButton>)
+                  return (<LetterButton $status={3} key={letter + "_key"} onClick={() => Type(letter, word, setWord)}>{letter}</LetterButton>)
                 }
 
                 if (almostLetters.includes(letter)) {
-                  return (<LetterButton $status={2} key={letter + "_key"} onClick={() => type(letter, word, setWord)}>{letter}</LetterButton>)
+                  return (<LetterButton $status={2} key={letter + "_key"} onClick={() => Type(letter, word, setWord)}>{letter}</LetterButton>)
                 }
 
                 if (guessedLetters.includes(letter)) {
-                  return (<LetterButton $status={1} key={letter + "_key"} onClick={() => type(letter, word, setWord)}>{letter}</LetterButton>)
+                  return (<LetterButton $status={1} key={letter + "_key"} onClick={() => Type(letter, word, setWord)}>{letter}</LetterButton>)
                 }
 
-                return (<LetterButton $status={0} key={letter + "_key"} onClick={() => type(letter, word, setWord)}>{letter}</LetterButton>)
+                return (<LetterButton $status={0} key={letter + "_key"} onClick={() => Type(letter, word, setWord)}>{letter}</LetterButton>)
               
               }
             })}
