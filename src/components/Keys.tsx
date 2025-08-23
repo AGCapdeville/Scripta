@@ -197,7 +197,7 @@ export const Keys = ({
           <Row key={rowIndex}>
             {row.map((letter) => {
               if (letter == "enter") {
-                return (<EnterButton key={letter + "_bttn"} onClick={() => Enter(saveWord)}>{letter}</EnterButton>);
+                return (<EnterButton key={letter + "_bttn"} onClick={() => saveWord(true)}>{letter}</EnterButton>);
               } else if (letter == "delete") {
                 return (<EnterButton key={letter + "_bttn"} onClick={() => Backspace(word, setWord)}>{letter}</EnterButton>);
               } else {
