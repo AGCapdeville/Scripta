@@ -52,7 +52,21 @@ const LetterButton = styled.div<{ $status: number }>`
   @media (min-width: 450px) {
   /* Styles for the smallest phones */
     width: 43px;
+    height: 50px;
   }
+
+  @media (min-width: 640px) {
+  /* Styles for the smallest phones */
+    width: 53px;
+    height: 60px;
+  }
+
+  @media (min-width: 768px) {
+  /* Styles for the smallest phones */
+    width: 63px;
+    height: 70px;
+  }
+
 `;
 
 const EnterButton = styled.button`
@@ -81,7 +95,18 @@ const EnterButton = styled.button`
   /* Styles for the smallest phones */
     width: 60px;
     font-size: 12px;
+  }
 
+  @media (min-width: 640px) {
+  /* Styles for the smallest phones */
+    width: 70px;
+    height: 60px;
+  }
+
+  @media (min-width: 768px) {
+  /* Styles for the smallest phones */
+    width: 90px;
+    height: 70px;
   }
 `;
 
