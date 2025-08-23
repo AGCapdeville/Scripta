@@ -11,7 +11,7 @@ const baseTile =
   "xs: w-[56px] xs: h-[56px] " +    /* small phones (≥375px) */
   "sm:w-[72px] sm:h-[72px] " + /* regular phones */
   "md:w-[82px] md:h-[82px] " + /* tablets */
-  "lg:w-[92px] lg:h-[92px] " + /* desktops */
+  "lg:w-[86px] lg:h-[86px] " + /* desktops */
   "sm:text-3xl lg:text-4xl";
 
 /** Letter state renderer (gray / gold / green) */
