@@ -42,17 +42,17 @@ export const loadPlayerData = (): PlayerDataProperties => {
 export const saveGameScore = (gameType: string, outcome: boolean, guesses: number) => {
     const player = loadPlayerData();
     const game = gameType === "Daily Game" ? player.dailyGame : player.waveGame;
-    const totalGames = game.wins + game.losses + 1;
+    const totalGames = game.wins + game.losses;
     
     if (outcome) {
         game.wins += 1;
         game.streak += 1;
         game.maxStreak = Math.max(game.maxStreak, game.streak);
+        game.distribution[guesses - 1] += 1;
     } else {
         game.losses += 1;
         game.streak = 0;
     }
-    game.distribution[guesses - 1] += 1;
 
     localStorage.setItem("playerData", JSON.stringify(player));
 }

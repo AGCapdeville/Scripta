@@ -25,7 +25,7 @@ const getDailyWord = (wordList: string[]): string => {
 
   if (!word) {
     const rng = getDailyRNG();
-    word = wordList[Math.floor(rng() * wordList.length) + 1]
+    word = wordList[Math.floor(rng() * wordList.length)];
     localStorage.setItem(getDailySeed(), word);
   }
 
@@ -84,8 +84,6 @@ export const DailyGame = () => {
     fetchSecretWord();
   }, []);
 
-
-
   return (
     <div className='screen'>
       
@@ -119,6 +117,7 @@ export const DailyGame = () => {
           word={word} 
           setWord={setWord} 
           saveWord={saveWord}
+          resultsShown={showResults}
           guessedLetters={guessedLetters}
           almostLetters={almostLetters}
           correctLetters={correctLetters}
@@ -130,6 +129,7 @@ export const DailyGame = () => {
           game="Daily Game"
           outcome={outcome}
           guesses={attempts}
+          secretWord={secretWord}
           onClose={closeHandler}
         />
       )}

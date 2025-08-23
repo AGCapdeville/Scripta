@@ -111,31 +111,32 @@ export const Type = (letter: string, word: string, setWword: React.Dispatch<Reac
   }
 }
 
-export const Enter = (saveWord: React.Dispatch<React.SetStateAction<boolean>>) => {
-  saveWord(true);
-}
-
 export const Backspace = (word: string, setWword: React.Dispatch<React.SetStateAction<string>>) => {
   let newWord = word.trim().substring(0, (word.trim().length - 1));
   setWword(newWord.padEnd(5));
 }
 
 export const useKeyboardListener = (
-  word: string, 
+  word: string,
   setWord: React.Dispatch<React.SetStateAction<string>>,
-  saveWord: React.Dispatch<React.SetStateAction<boolean>> 
+  saveWord: React.Dispatch<React.SetStateAction<boolean>>,
+  resultsShown: boolean
 ) => {
 
   const wordRef = useRef(word);
+  const resultsShownRef = useRef(resultsShown);
 
   // Keep the ref up to date with the latest word
   useEffect(() => {
     wordRef.current = word;
-  }, [word]);
+    resultsShownRef.current = resultsShown;
+  }, [word, resultsShown]);
 
   useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented) return;
+
+      if (resultsShownRef.current) return; // Game Over
 
       const key = event.key.toLowerCase(); // normalize
       if (qwerty.includes(key) && key !== "enter" && key != "return") {
@@ -143,7 +144,7 @@ export const useKeyboardListener = (
       } else if (key === "backspace") {
         Backspace(wordRef.current, setWord);
       } else if (key === "enter") {
-        Enter(saveWord);
+        saveWord(true);
       }
 
       event.preventDefault();
@@ -161,13 +162,24 @@ type Props = {
   word: string;
   setWord: React.Dispatch<React.SetStateAction<string>>; // @Question : Is this the best way to do this...
   saveWord: React.Dispatch<React.SetStateAction<boolean>>;
+  resultsShown: boolean;
   guessedLetters: Array<string>;
   almostLetters: Array<string>;
   correctLetters: Array<string>;
 }
 
-export const Keys = ({ word, setWord, saveWord, guessedLetters, almostLetters, correctLetters}: Props) => {
-  useKeyboardListener(word, setWord, saveWord);
+export const Keys = ({ 
+  word, 
+  setWord, 
+  saveWord,
+  resultsShown,
+  guessedLetters, 
+  almostLetters, 
+  correctLetters
+}: Props) => {
+
+
+  useKeyboardListener(word, setWord, saveWord, resultsShown);
 
   const rowLengths = [10, 9, 10];
   let rows: string[][] = [];

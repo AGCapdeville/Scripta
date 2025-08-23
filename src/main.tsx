@@ -4,7 +4,11 @@ import { BrowserRouter } from 'react-router-dom';
 import './index.css'
 import App from './App'
 
+import { loadPlayerData } from './utility/UserData';
+
 let root = document.getElementById('root');
+
+loadPlayerData();
 
 if (root)
   createRoot(root).render(
