@@ -1,40 +1,6 @@
 import { useEffect, useState } from "react";
+import { FlipTile } from "./Letter";
 import dictJSON from "../assets/dictionary.json";
-
-/** Utility: base tile classes */
-const baseTile = 
-  "flex items-center justify-center " +
-  "text-[14px] m-1 uppercase font-bold select-none " + 
-  "border-1 border-[#3a3a3c] " +
-  "w-[36px] h-[36px] " +    /* default <320px */
-  "xxs: w-[46px] xxs: h-[40px] " +   /* tiny phones (≥320px) */
-  "xs: w-[56px] xs: h-[56px] " +    /* small phones (≥375px) */
-  "sm:w-[72px] sm:h-[72px] " + /* regular phones */
-  "md:w-[82px] md:h-[82px] " + /* tablets */
-  "lg:w-[86px] lg:h-[86px] " + /* desktops */
-  "sm:text-3xl lg:text-4xl";
-
-/** Letter state renderer (gray / gold / green) */
-export const letterState = (letter: string, index: number, answer: string) => {
-  if (answer[index] === letter) {
-    return (
-      <div key={index} className={`${baseTile} bg-[#508c50]`}>
-        {letter}
-      </div>
-    );
-  } else if (answer.includes(letter)) {
-    return (
-      <div key={index} className={`${baseTile} bg-[#b99d42]`}>
-        {letter}
-      </div>
-    );
-  }
-  return (
-    <div key={index} className={`${baseTile} bg-[#121212]`}>
-      {letter}
-    </div>
-  );
-};
 
 type WordProps = {
   word: string;
@@ -118,7 +84,16 @@ export const Word = ({
               "flex justify-center w-full gap-[5px] py-[2px]"
             }
           >
-            {[0, 1, 2, 3, 4].map((index) => letterState(" ", index, secretWord))}
+            {[0, 1, 2, 3, 4].map((index) => 
+              <FlipTile
+                key={`${rowIndex}-${index}`}
+                letter={" "}
+                index={index}
+                answer={secretWord}
+                delayMs={index * 120} // nice stagger
+              />
+              // Letter(" ", index, secretWord)
+            )}
           </div>
         ))}
 
@@ -126,11 +101,18 @@ export const Word = ({
         <div className="flex flex-col absolute">
           {/* Submitted rows */}
           {submittedWords.map((submittedWord, rowIndex) => (
-            <div
-              key={rowIndex}
-              className="flex justify-center w-full gap-[5px] py-[2px]"
-            >
-              {[...submittedWord].map((letter, index) => letterState(letter, index, secretWord))}
+            <div key={rowIndex} className="flex justify-center w-full gap-[5px] py-[2px]">
+              {[...submittedWord].map((ch, i) => (
+                <div className="bg-black ">
+                  <FlipTile
+                    key={`${rowIndex}-${i}`}
+                    letter={ch}
+                    index={i}
+                    answer={secretWord}
+                    delayMs={i * 120} // nice stagger
+                  />
+                </div>
+              ))}
             </div>
           ))}
 
@@ -143,9 +125,13 @@ export const Word = ({
             }
           >
             {[...word].map((letter, index) => (
-              <div key={index} className={`${baseTile} bg-[#121212]`}>
-                {letter}
-              </div>
+              <FlipTile
+                key={`${index}`}
+                letter={letter}
+                index={index}
+                answer={""}
+                delayMs={index * 120} // nice stagger
+              />
             ))}
           </div>
         </div>
