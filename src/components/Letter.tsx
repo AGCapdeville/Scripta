@@ -38,7 +38,8 @@ export const FlipLetter = ({ letter, index, answer, delayMs = 0 }: FlipLetterPro
 
     useEffect(() => {
         // start at 0deg, flip after delay -> triggers transition
-        const t = setTimeout(() => setFlipped(true), delayMs);
+        const startDelay = Math.max(16, delayMs); // ~1 frame minimum
+        const t = setTimeout(() => setFlipped(true), startDelay);
         return () => clearTimeout(t);
     }, [delayMs]);
 
