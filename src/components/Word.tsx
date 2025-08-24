@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FlipTile } from "./Letter";
+import { FlipLetter } from "./Letter";
 import dictJSON from "../assets/dictionary.json";
 
 type WordProps = {
@@ -85,7 +85,7 @@ export const Word = ({
             }
           >
             {[0, 1, 2, 3, 4].map((index) => 
-              <FlipTile
+              <FlipLetter
                 key={`${rowIndex}-${index}`}
                 letter={" "}
                 index={index}
@@ -104,7 +104,7 @@ export const Word = ({
             <div key={rowIndex} className="flex justify-center w-full gap-[5px] py-[2px]">
               {[...submittedWord].map((ch, i) => (
                 <div className="bg-black ">
-                  <FlipTile
+                  <FlipLetter
                     key={`${rowIndex}-${i}`}
                     letter={ch}
                     index={i}
@@ -125,7 +125,7 @@ export const Word = ({
             }
           >
             {[...word].map((letter, index) => (
-              <FlipTile
+              <FlipLetter
                 key={`${index}`}
                 letter={letter}
                 index={index}

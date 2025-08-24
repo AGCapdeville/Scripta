@@ -86,10 +86,6 @@ export const DailyGame = () => {
 
   return (
     <div className='screen'>
-      
-      <div className='title'>
-        <h3>Scripta</h3>
-      </div>
 
       <div id="Results"></div>
       
@@ -125,14 +121,14 @@ export const DailyGame = () => {
       </div>
 
       {showResults && (
-        <Results
-          game="Daily Game"
-          outcome={outcome}
-          guesses={attempts}
-          secretWord={secretWord}
-          onClose={closeHandler}
-        />
-      )}
+                  <Results
+            game="Daily Game"
+            outcome={outcome}
+            guesses={attempts}
+            secretWord={secretWord}
+            onClose={closeHandler}
+            />
+                )}
 
     </div>
   )
