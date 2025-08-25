@@ -33,7 +33,6 @@ function useLoopTitle(
   setCharSeed: React.Dispatch<React.SetStateAction<string>>,
   intervalMs = 3000
 ) {
-  console.log(intervalMs)
   useEffect(() => {
     const id = setInterval(() => {
       setCharSeed(() => randomWord(title));
