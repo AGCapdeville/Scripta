@@ -41,6 +41,7 @@ export const DailyGame = () => {
   const [attempts, setAttempts] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [outcome, setOutcome] = useState(false);
+  const [revealModal, setRevealModal] = useState(false);
 
   const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
   const [almostLetters, setAlmostLetters] = useState<string[]>([]);
@@ -49,6 +50,7 @@ export const DailyGame = () => {
 
   const closeHandler = () => {
     setShowResults(false);
+    setRevealModal(false);
     navigate('/scripta/');
   };
 
@@ -74,9 +76,9 @@ export const DailyGame = () => {
     
     if (ended) {
       setOutcome(won);
-      setShowResults(true);
+      setShowResults(true)
+      setTimeout(() => setRevealModal(true), 3000);
     }
-
   }, [save])
 
   // Do once and forget...
@@ -120,15 +122,15 @@ export const DailyGame = () => {
         />
       </div>
 
-      {showResults && (
-                  <Results
-            game="Daily Game"
-            outcome={outcome}
-            guesses={attempts}
-            secretWord={secretWord}
-            onClose={closeHandler}
-            />
-                )}
+      {revealModal && (
+        <Results
+          game="Daily Game"
+          outcome={outcome}
+          guesses={attempts}
+          secretWord={secretWord}
+          onClose={closeHandler}
+        />
+      )}
 
     </div>
   )

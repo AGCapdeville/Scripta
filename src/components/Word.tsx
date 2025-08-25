@@ -40,7 +40,11 @@ export const Word = ({
   useEffect(() => {
     if (!save) return;
 
-    if (wordSet.has(word.toLowerCase()) && word.trim().length === 5 && attempts < 5) {
+    console.log("b: " + word);
+
+    if (wordSet.has(word.toLowerCase()) && word.trim().length === 5) {
+      console.log("a: " + word);
+
       let guessed = [...guessedLetters];
       let almost = [...almostLetters];
       let correct = [...correctLetters];
@@ -117,23 +121,26 @@ export const Word = ({
           ))}
 
           {/* Current typing row */}
-          <div
-            id="currentWord"
-            className={
-              "flex justify-center w-full gap-[5px] py-[2px] " +
-              (shake ? "animate-[shake_0.5s_ease-in-out]" : "")
-            }
-          >
-            {[...word].map((letter, index) => (
-              <FlipLetter
-                key={`${index}`}
-                letter={letter}
-                index={index}
-                answer={""}
-                delayMs={index * 120} // nice stagger
-              />
-            ))}
-          </div>
+          
+          {attempts <= 5 && (
+            <div
+              id="currentWord"
+              className={
+                "flex justify-center w-full gap-[5px] py-[2px] " +
+                (shake ? "animate-[shake_0.5s_ease-in-out]" : "")
+              }
+            >
+              {[...word].map((letter, index) => (
+                <FlipLetter
+                  key={`${index}`}
+                  letter={letter}
+                  index={index}
+                  answer={""}
+                  delayMs={index * 120} // nice stagger
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </>
