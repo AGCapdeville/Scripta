@@ -40,10 +40,7 @@ export const Word = ({
   useEffect(() => {
     if (!save) return;
 
-    console.log("b: " + word);
-
     if (wordSet.has(word.toLowerCase()) && word.trim().length === 5) {
-      console.log("a: " + word);
 
       let guessed = [...guessedLetters];
       let almost = [...almostLetters];
@@ -68,7 +65,6 @@ export const Word = ({
     }
 
     saveWord(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [save]);
 
   useEffect(() => {
@@ -78,12 +74,12 @@ export const Word = ({
 
   return (
     <>
-      {/* WordContainer -> flex col, center */}
       <div className="flex flex-col items-center">
-        {/* Empty 6 rows grid preview */}
+
+        {/* Number of Attempts place holders */}
         {[0, 1, 2, 3, 4, 5].map((rowIndex) => (
           <div
-            key={rowIndex}
+            key= {"wordPlaceHolder" + rowIndex}
             className={
               "flex justify-center w-full gap-[5px] py-[2px]"
             }
@@ -96,7 +92,6 @@ export const Word = ({
                 answer={secretWord}
                 delayMs={index * 120} // nice stagger
               />
-              // Letter(" ", index, secretWord)
             )}
           </div>
         ))}
@@ -121,7 +116,6 @@ export const Word = ({
           ))}
 
           {/* Current typing row */}
-          
           {attempts <= 5 && (
             <div
               id="currentWord"
@@ -141,6 +135,7 @@ export const Word = ({
               ))}
             </div>
           )}
+
         </div>
       </div>
     </>

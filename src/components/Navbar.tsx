@@ -3,6 +3,14 @@ import { ThreeLineMenu } from "./MenuButtons";
 import { FlipLetter } from './Letter';
 import { useEffect, useState } from 'react';
 
+const tileStyle = `
+  flex justify-center
+  gap - [5px] 
+  py - [2px]
+  scale-55
+  md:scale-65
+`;
+
 // min and max inclusive
 const randomInt = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -48,11 +56,11 @@ export const Navbar = () => {
   useLoopTitle(title, setCharSeed, 19000);
 
   return (
-    <nav className="flex items-center p-2 text-white">
-      <div className="absolute">
+    <nav className="flex items-center p-2 text-white bg-black">
+      <div className="absolute left-0 right-0">
         <Link
           key={charSeed}
-          className= "flex justify-center scale-55 gap-[5px] py-[2px]" //"flex scale-60 m-1" //scale-55
+          className={tileStyle} //"flex scale-60 m-1" //scale-55
           to="/scripta"
         >
           {[...title].map((ch, i) => (

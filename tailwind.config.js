@@ -6,6 +6,10 @@ export default {
     ],
     theme: {
         extend: {
+            scale: {
+                55: "0.55",
+                65: "0.65",
+            },
             screens: {
                 'xs': '375px',   // iPhone SE / small Androids
                 'xxs': '320px',  // very tiny devices

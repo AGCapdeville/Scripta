@@ -6,9 +6,10 @@ export const Home = () => {
   // localStorage.clear(); // Clear local storage for testing purposes  
   return (
     <div>
-      <h1>Scripta V:1.0.0 </h1>
       <p>Select a game:</p>
-      <Link to="/scripta/daily">Daily Word</Link>
+      <div className='w:100vw h:100vh flex'>
+        <Link to="/scripta/daily">Daily Word</Link>
+      </div>
     </div>
   );
 }
