@@ -5,8 +5,7 @@ import { useEffect, useState } from 'react';
 
 const tileStyle = `
   flex justify-center
-  gap - [5px] 
-  py - [2px]
+  gap-[3px] 
   scale-55
   md:scale-65
 `;
