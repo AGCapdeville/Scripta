@@ -77,7 +77,7 @@ export const DailyGame = () => {
     if (ended) {
       setOutcome(won);
       setShowResults(true)
-      setTimeout(() => setRevealModal(true), 3000);
+      setTimeout(() => setRevealModal(true), 1500);
     }
   }, [save])
 
